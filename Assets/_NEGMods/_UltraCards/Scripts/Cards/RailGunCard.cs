@@ -12,16 +12,15 @@ namespace NEG.UltraCards
 			CharacterStatModifiers _statModifiers, Block _block)
 		{
 			UnityEngine.Debug.Log($"Rail Object Asset: {railObjectAsset.name}");
-			//UnityEngine.Debug.LogWarning($"Rail Object Asset: {drillProjectile.name}");
 
 			_gun.damageAfterDistanceMultiplier = 0.9f;
-			_gun.damage = 4;
+			_gun.damage = 10;
 			_gun.recoil = 1.8f;
 			_gun.bodyRecoil = 2f;
 			_gun.recoilMuiltiplier = 1.05f;
 			_gun.shake = 1.2f;
 			_gun.reflects = 0;
-			_gun.projectileSpeed = 20;
+			_gun.projectileSpeed = 50;
 			_gun.gravity = 1.005f;
 			_gun.drag = 1.005f;
 			_gun.knockback = 1.25f;
@@ -83,21 +82,21 @@ Charge to increase damage and penertration.";
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+400%",
+					amount = "+1000%",
 					stat = "Damage",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+25%",
-					stat = "Bullet Damage",
+					amount = "+5000%",
+					stat = "Bullet Speed",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+28m",
+					amount = "+20m",
 					stat = "Penertration",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
