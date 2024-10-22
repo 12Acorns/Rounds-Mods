@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 1413578832
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: neg_ultracards
+      Dependencies: {}

@@ -1,0 +1,36 @@
+ManifestFileVersion: 0
+CRC: 1776108154
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3632be46a0be2b1f465721c39556ec7b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 4b19f92262821fabba95f72b1560796d
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 96
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 254e41397e040304690b19ee3bda7608, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f4bf6f6d7fe69a042b39ffc94172c723, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+Assets:
+- Assets/_NEGMods/_UltraCards/Cards/A_RailDrillAmmo.prefab
+Dependencies: []

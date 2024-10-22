@@ -5,51 +5,72 @@ namespace NEG.UltraCards
 {
 	public sealed class RailGunCard : CustomCard
 	{
+		private static readonly GameObject railObjectAsset =
+			UltraCardsEntry.UltraCardsAssets.LoadAsset<GameObject>("A_RailDrillAmmo");
+
 		public override void SetupCard(CardInfo _cardInfo, Gun _gun, ApplyCardStats _cardStats,
 			CharacterStatModifiers _statModifiers, Block _block)
 		{
-			_gun.damage = 120;
-			_gun.recoil = 0.25f;
-			_gun.bodyRecoil = 0.05f;
-			_gun.shake = 0.4f;
+			UnityEngine.Debug.Log($"Rail Object Asset: {railObjectAsset.name}");
+			//UnityEngine.Debug.LogWarning($"Rail Object Asset: {drillProjectile.name}");
+
+			_gun.damageAfterDistanceMultiplier = 0.9f;
+			_gun.damage = 4;
+			_gun.recoil = 1.8f;
+			_gun.bodyRecoil = 2f;
+			_gun.recoilMuiltiplier = 1.05f;
+			_gun.shake = 1.2f;
 			_gun.reflects = 0;
-			_gun.projectileSpeed = 200;
-			_gun.gravity = 0.05f;
-			_gun.drag = 0.1f;
-			_gun.chargeDamageMultiplier = 1.05f;
-			_gun.ammo = 1;
-			_gun.reloadTime = 2.5f;
+			_gun.projectileSpeed = 20;
+			_gun.gravity = 1.005f;
+			_gun.drag = 1.005f;
+			_gun.knockback = 1.25f;
+			_gun.chargeDamageMultiplier = 1.5f;
+			_gun.lockGunToDefault = true;
+			_gun.ammo = 0;
+			_gun.reloadTimeAdd = 2.5f;
 			_gun.unblockable = true;
 			_gun.useCharge = true;
 			_gun.spread = 0;
-			_gun.bursts = 1;
-			_gun.bulletDamageMultiplier = 1.25f;
+			_gun.bursts = 0;
+			_gun.bulletDamageMultiplier = 1.025f;
+			_gun.projectileColor = Color.white;
+			var _projectile = new ObjectsToSpawn()
+			{
+				numberOfSpawns = 1,
+				AddToProjectile = railObjectAsset,
+				scaleStackM = 0.8f,
+			};
+			_gun.objectsToSpawn = new ObjectsToSpawn[]
+			{
+				_projectile
+			};
+
+			UnityEngine.Debug.Log($"[{UltraCardsEntry.MODINITIALS}][Card] {GetTitle()} has been setup.");
 		}
 		public override void OnAddCard(Player _player, Gun _gun, GunAmmo _gunAmmo,
 			CharacterData _data, HealthHandler _health, Gravity _gravity,
 			Block _block, CharacterStatModifiers _characterStats)
 		{
+			_gunAmmo.maxAmmo = 1;
+			UnityEngine.Debug.Log($"[{UltraCardsEntry.MODINITIALS}][Card] {GetTitle()} has been added to player {_player.playerID}.");
 		}
 		public override void OnRemoveCard(Player _player, Gun _gun, GunAmmo _gunAmmo, CharacterData _data,
 			HealthHandler _health, Gravity _gravity, Block _block, CharacterStatModifiers _characterStats)
 		{
-			_gun.damage = Mathf.Max(1, _gun.damage -= 120);
-			_gun.recoil = Mathf.Max(0, _gun.recoil -= 0.25f);
-			_gun.bodyRecoil = Mathf.Max(0, _gun.bodyRecoil -= 0.05f);
-			_gun.shake = Mathf.Max(0, _gun.shake -= 0.4f);
+			UnityEngine.Debug.Log($"[{UltraCardsEntry.MODINITIALS}][Card] {GetTitle()} has been removed from player {_player.playerID}.");
 		}
 		protected override GameObject GetCardArt()
 		{
 			return null;
+			//return new GameObject("RailGun Card Art");
 		}
 		protected override string GetDescription()
 		{
 			return
-@"
-Converts your gun into a RailGun.
-A single, powerful bullet which can penertrate surfaces and obliterate anything within its path.
-Charge to increase damage and penertration.
-";
+@"Converts your gun into a RailGun.
+A single, powerful bullet which penertrates surfaces and obliterate anything in its path.
+Charge to increase damage and penertration.";
 		}
 		protected override CardInfo.Rarity GetRarity()
 		{
@@ -62,44 +83,37 @@ Charge to increase damage and penertration.
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "120 Base Damage",
-					stat = "Damage"
+					amount = "+400%",
+					stat = "Damage",
+					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+ 25%",
-					stat = "Bullet Damage"
+					amount = "+25%",
+					stat = "Bullet Damage",
+					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "20m",
-					stat = "Penertration"
+					amount = "+28m",
+					stat = "Penertration",
+					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = false,
-					amount = "0.25",
-					stat = "Recoil"
+					amount = "+2.5 Seconds",
+					stat = "Reload Time",
+					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = false,
-					amount = "0.05",
-					stat = "Body Recoil"
-				},
-				new CardInfoStat()
-				{
-					positive = false,
-					amount = "0.4",
-					stat = "Shake"
-				},
-				new CardInfoStat()
-				{
-					positive = false,
-					amount = "2.5 Seconds",
-					stat = "Reload Time"
+					amount = "1 Bullet",
+					stat = "Ammo",
+					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				}
 			};
 		}
@@ -113,7 +127,7 @@ Charge to increase damage and penertration.
 		}
 		public override string GetModName()
 		{
-			return UltraRoundsEntry.MODINITIALS;
+			return UltraCardsEntry.MODINITIALS;
 		}
 	}
 }
