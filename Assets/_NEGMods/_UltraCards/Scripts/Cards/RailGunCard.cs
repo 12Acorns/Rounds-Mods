@@ -5,35 +5,41 @@ namespace NEG.UltraCards
 {
 	public sealed class RailGunCard : CustomCard
 	{
+		private const int DAMAGEMULTIPLIER = 10;
+		private const float PROJECTILESPEEDMULTIPLIER = 50;
+		private const float RECOILMULTIPLIER = 1.8f;
+		private const float RELOADTIMEADDITIVE = 2.5f;
+
 		private static readonly GameObject railObjectAsset =
 			UltraCardsEntry.UltraCardsAssets.LoadAsset<GameObject>("A_RailDrillAmmo");
+		private static readonly RayHitDrill railObjectDrill = railObjectAsset.GetComponent<RayHitDrill>();
 
 		public override void SetupCard(CardInfo _cardInfo, Gun _gun, ApplyCardStats _cardStats,
 			CharacterStatModifiers _statModifiers, Block _block)
 		{
 			UnityEngine.Debug.Log($"Rail Object Asset: {railObjectAsset.name}");
 
+			_gun.useCharge = true;
+			_gun.chargeSpeedTo = 1.2f;
+			_gun.chargeRecoilTo = 1.5f;
+			_gun.chargeDamageMultiplier = 1.5f;
+
 			_gun.damageAfterDistanceMultiplier = 0.9f;
-			_gun.damage = 10;
-			_gun.recoil = 1.8f;
+			_gun.damage = DAMAGEMULTIPLIER;
+			_gun.recoil = RECOILMULTIPLIER;
 			_gun.bodyRecoil = 2f;
 			_gun.recoilMuiltiplier = 1.05f;
 			_gun.shake = 1.2f;
 			_gun.reflects = 0;
-			_gun.projectileSpeed = 50;
+			_gun.projectileSpeed = PROJECTILESPEEDMULTIPLIER;
 			_gun.gravity = 1.005f;
-			_gun.drag = 1.005f;
-			_gun.knockback = 1.25f;
-			_gun.chargeDamageMultiplier = 1.5f;
+			_gun.drag = 1.01f;
+			_gun.knockback = 1.75f;
 			_gun.lockGunToDefault = true;
-			_gun.ammo = 0;
-			_gun.reloadTimeAdd = 2.5f;
+			_gun.reloadTimeAdd = RELOADTIMEADDITIVE;
 			_gun.unblockable = true;
-			_gun.useCharge = true;
-			_gun.spread = 0;
-			_gun.bursts = 0;
-			_gun.bulletDamageMultiplier = 1.025f;
-			_gun.projectileColor = Color.white;
+			_gun.bulletDamageMultiplier = 1.25f;
+			_gun.projectileColor = Color.red;
 			var _projectile = new ObjectsToSpawn()
 			{
 				numberOfSpawns = 1,
@@ -82,28 +88,28 @@ Charge to increase damage and penertration.";
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+1000%",
+					amount = $"+{DAMAGEMULTIPLIER * 100}%",
 					stat = "Damage",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+5000%",
+					amount = $"+{PROJECTILESPEEDMULTIPLIER * 100}%",
 					stat = "Bullet Speed",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = true,
-					amount = "+20m",
+					amount = $"+{railObjectDrill.metersOfDrilling} Meters",
 					stat = "Penertration",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},
 				new CardInfoStat()
 				{
 					positive = false,
-					amount = "+2.5 Seconds",
+					amount = $"+{RELOADTIMEADDITIVE:n0} Seconds",
 					stat = "Reload Time",
 					simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 				},

@@ -5,12 +5,25 @@ namespace NEG.UltraCards
 {
 	public sealed class ParticleAcceleratorCard : CustomCard
 	{
+		private const int BOUNCES = 12;
+		private const float DAMAGEMULTIPLIERPERBOUNCE = 1.15f;
+		private const float SPEEDMULTIPLIERPERBOUNCE = 1.05f;
+
+		private const float VISUALDAMAGEPERCENT = 
+			(DAMAGEMULTIPLIERPERBOUNCE * 100) >= 100 
+			? (DAMAGEMULTIPLIERPERBOUNCE * 100) - 100 
+			: (DAMAGEMULTIPLIERPERBOUNCE * 100);
+		private const float VISUALSPEEDPERCENT = 
+			(SPEEDMULTIPLIERPERBOUNCE * 100) >= 100
+			? (SPEEDMULTIPLIERPERBOUNCE * 100) - 100
+			: (SPEEDMULTIPLIERPERBOUNCE * 100);
+
 		public override void SetupCard(CardInfo _cardInfo, Gun _gun, ApplyCardStats _cardStats,
 			CharacterStatModifiers _statModifiers, Block _block)
 		{
-			_gun.reflects = 28;
-			_gun.dmgMOnBounce = 1.2f;
-			_gun.speedMOnBounce = 1.25f;
+			_gun.reflects = BOUNCES;
+			_gun.dmgMOnBounce = DAMAGEMULTIPLIERPERBOUNCE;
+			_gun.speedMOnBounce = SPEEDMULTIPLIERPERBOUNCE;
 
 			UnityEngine.Debug.Log($"[{UltraCardsEntry.MODINITIALS}][Card] {GetTitle()} has been setup.");
 		}
@@ -48,21 +61,21 @@ A single, slow-starting bullet which will increase in speed and damage per bounc
 			new CardInfoStat()
 			{
 				positive = true,
-				amount = "+28 Bounces",
+				amount = $"+{BOUNCES} Bounces",
 				stat = "Bounces",
 				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 			},
 			new CardInfoStat()
 			{
 				positive = true,
-				amount = "+20% Per Bounce",
+				amount = $"+{VISUALDAMAGEPERCENT:n0}%/Bounce",
 				stat = "Damage",
 				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 			},
 			new CardInfoStat()
 			{
 				positive = true,
-				amount = "+25% Per Bounce",
+				amount = $"+{VISUALSPEEDPERCENT:n0}%/Bounce",
 				stat = "Speed",
 				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 			},

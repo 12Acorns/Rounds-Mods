@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priority: 100
-  metersOfDrilling: 20
+  metersOfDrilling: 12
   mainDrill: 1
   speedModFlat: 0.95
   speedMod: 0.05
