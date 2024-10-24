@@ -5,8 +5,8 @@ namespace NEG.UltraCards
 {
 	public sealed class RailGunCard : CustomCard
 	{
-		private const int DAMAGEMULTIPLIER = 10;
-		private const float PROJECTILESPEEDMULTIPLIER = 50;
+		private const float DAMAGEMULTIPLIER = 3;
+		private const float PROJECTILESPEEDMULTIPLIER = 12;
 		private const float RECOILMULTIPLIER = 1.8f;
 		private const float RELOADTIMEADDITIVE = 2.5f;
 
