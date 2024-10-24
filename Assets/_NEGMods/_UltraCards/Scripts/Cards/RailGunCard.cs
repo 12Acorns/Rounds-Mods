@@ -73,8 +73,7 @@ namespace NEG.UltraCards
 		protected override string GetDescription()
 		{
 			return
-@"Converts your gun into a RailGun.
-A single, powerful bullet which penertrates surfaces and obliterate anything in its path.
+@"A single, powerful bullet which penertrates surfaces and obliterate anything in its path.
 Charge to increase damage and penertration.";
 		}
 		protected override CardInfo.Rarity GetRarity()

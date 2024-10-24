@@ -4,6 +4,7 @@ using UnityEngine;
 using HarmonyLib;
 using BepInEx;
 using System.IO;
+using BepInEx.Configuration;
 
 namespace NEG.UltraCards
 {
@@ -26,9 +27,17 @@ namespace NEG.UltraCards
 		public static AssetBundle UltraCardsAssets { get; } = 
 			AssetUtils.LoadAssetBundle(ultraCardsLocation);
 
+		public static ConfigEntry<bool> AcceleratorForceOneMaxAmmo { get; private set; }
+
 		void Awake()
 		{
+			AcceleratorForceOneMaxAmmo = Config.Bind(
+				"Cards.Particle Accelerator",
+				"Force One Bullet Maximum Ammo",
+				true);
+
 			var _harmony = new Harmony(MODID);
+			
 			_harmony.PatchAll();
 			UnityEngine.Debug.Log("Target Path Minus DLL: " + path);
 			UnityEngine.Debug.Log("Base Path: " + Directory.GetParent(path).FullName);

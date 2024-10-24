@@ -8,6 +8,9 @@ namespace NEG.UltraCards
 		private const int BOUNCES = 12;
 		private const float DAMAGEMULTIPLIERPERBOUNCE = 1.15f;
 		private const float SPEEDMULTIPLIERPERBOUNCE = 1.05f;
+		private const float RELOADTIMEADDITIVE = 2.5f;
+		private const float ATTACKSPEEDMULTIPLIER = 0.85f;
+		private const float MOVEMENTSPEEDMULTIPLIER = 0.85f;
 
 		private const float VISUALDAMAGEPERCENT = 
 			(DAMAGEMULTIPLIERPERBOUNCE * 100) >= 100 
@@ -25,13 +28,20 @@ namespace NEG.UltraCards
 			_gun.dmgMOnBounce = DAMAGEMULTIPLIERPERBOUNCE;
 			_gun.speedMOnBounce = SPEEDMULTIPLIERPERBOUNCE;
 
+			_gun.reloadTimeAdd = RELOADTIMEADDITIVE;
+			_statModifiers.attackSpeedMultiplier = ATTACKSPEEDMULTIPLIER;
+			_statModifiers.movementSpeed = MOVEMENTSPEEDMULTIPLIER;
+
 			UnityEngine.Debug.Log($"[{UltraCardsEntry.MODINITIALS}][Card] {GetTitle()} has been setup.");
 		}
 		public override void OnAddCard(Player _player, Gun _gun, GunAmmo _gunAmmo,
 			CharacterData _data, HealthHandler _health, Gravity _gravity,
 			Block _block, CharacterStatModifiers _characterStats)
 		{
-			_gunAmmo.maxAmmo = 1;
+			if(UltraCardsEntry.AcceleratorForceOneMaxAmmo.Value)
+			{
+				_gunAmmo.maxAmmo = 1;
+			}
 			UnityEngine.Debug.Log($"[{UltraCardsEntry.MODINITIALS}][Card] {GetTitle()} has been added to player {_player.playerID}.");
 		}
 		public override void OnRemoveCard(Player _player, Gun _gun, GunAmmo _gunAmmo, CharacterData _data,
@@ -46,9 +56,7 @@ namespace NEG.UltraCards
 		}
 		protected override string GetDescription()
 		{
-			return
-@"Converts your gun into a Particle Accelerator.
-A single, slow-starting bullet which will increase in speed and damage per bounce.";
+			return "Your bullets now increase in damage and speed per bounce.";
 		}
 		protected override CardInfo.Rarity GetRarity()
 		{
@@ -76,7 +84,28 @@ A single, slow-starting bullet which will increase in speed and damage per bounc
 			{
 				positive = true,
 				amount = $"+{VISUALSPEEDPERCENT:n0}%/Bounce",
-				stat = "Speed",
+				stat = "Bullet Speed",
+				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+			},
+			new CardInfoStat()
+			{
+				positive = false,
+				amount = $"+{RELOADTIMEADDITIVE:n2} Seconds",
+				stat = "Reload Time",
+				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+			},
+			new CardInfoStat()
+			{
+				positive = false,
+				amount = $"-{(ATTACKSPEEDMULTIPLIER*100):n0}%",
+				stat = "Attack Speed",
+				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+			},
+			new CardInfoStat()
+			{
+				positive = false,
+				amount = $"-{(MOVEMENTSPEEDMULTIPLIER*100):n0}%",
+				stat = "Move Speed",
 				simepleAmount = CardInfoStat.SimpleAmount.notAssigned
 			},
 			};
