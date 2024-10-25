@@ -1604,6 +1604,8 @@
       <Project>{657D1584-44BF-CC86-55FB-B349DB8BB8B6}</Project>      <Name>CardThemeLib</Name>    </ProjectReference>
     <ProjectReference Include="RarityLib.csproj">
       <Project>{A03D4195-2F33-3B3B-BE3B-679F8C68DCB8}</Project>      <Name>RarityLib</Name>    </ProjectReference>
+    <ProjectReference Include="NEG.BetterChatReborn.csproj">
+      <Project>{3470C6DE-6BE9-281D-FFDD-94F92794C25A}</Project>      <Name>NEG.BetterChatReborn</Name>    </ProjectReference>
     <ProjectReference Include="RoundsWithFriends.csproj">
       <Project>{F9BCC0E0-305F-BC8C-CD4E-BA1DDC1F555B}</Project>      <Name>RoundsWithFriends</Name>    </ProjectReference>
     <ProjectReference Include="WillsWackyManagers.csproj">
