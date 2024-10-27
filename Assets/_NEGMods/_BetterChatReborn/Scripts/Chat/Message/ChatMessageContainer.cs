@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 
-namespace NEG.BetterChatReborn.Chat
+namespace NEG.BetterChatReborn.Chat.Messages
 {
 	public sealed class ChatMessageContainer : MonoBehaviour
 	{

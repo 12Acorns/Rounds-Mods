@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NEG.BetterChatReborn.Chat
+namespace NEG.BetterChatReborn.Chat.Messages
 {
 	public sealed class PlayerChatHistory
 	{

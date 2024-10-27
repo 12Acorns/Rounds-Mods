@@ -1,10 +1,11 @@
-﻿using Jotunn.Utils;
+﻿using NEG.BetterChatReborn.Chat;
+using UnboundLib.GameModes;
+using System.Collections;
+using Jotunn.Utils;
 using UnityEngine;
 using HarmonyLib;
 using System.IO;
 using BepInEx;
-using UnboundLib;
-using NEG.BetterChatReborn.Chat;
 
 namespace NEG.BetterChatReborn
 {
@@ -27,17 +28,21 @@ namespace NEG.BetterChatReborn
 
 		void Awake()
 		{
+			UnityEngine.Debug.Assert(BetterChatRebornAssets != null, "Could not load required assets");
+			
 			var _harmony = new Harmony(MODID);
 			_harmony.PatchAll();
 
-			Unbound.RegisterClientSideMod(MODID);
+			ConfigBindings.InitBindings(this);
+			MenuConfig.Init();
 
-			Unbound.RegisterMenu("Better Chat Reborn", () =>
-			{
-				MenuControllerHandler.instance.GetComponent<ChatMenuManager>();
-			}, (_object) => { }, null, true);
+			GameModeManager.AddHook(GameModeHooks.HookBattleStart, OnBattleStart);
+		}
 
+		private static IEnumerator OnBattleStart(IGameModeHandler _handler)
+		{
 
+			yield return null;
 		}
 	}
 }

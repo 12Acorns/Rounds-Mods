@@ -1,7 +1,10 @@
 ManifestFileVersion: 0
-CRC: 1975409151
+CRC: 1686265437
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: neg_ultracards
+      Dependencies: {}
+    Info_1:
+      Name: neg_betterchatreborn
       Dependencies: {}

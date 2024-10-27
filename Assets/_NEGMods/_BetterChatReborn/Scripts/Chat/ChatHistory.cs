@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NEG.BetterChatReborn.Chat.Messages;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NEG.BetterChatReborn.Chat

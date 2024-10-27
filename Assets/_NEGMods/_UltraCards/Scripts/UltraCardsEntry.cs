@@ -37,12 +37,7 @@ namespace NEG.UltraCards
 				true);
 
 			var _harmony = new Harmony(MODID);
-			
 			_harmony.PatchAll();
-			UnityEngine.Debug.Log("Target Path Minus DLL: " + path);
-			UnityEngine.Debug.Log("Base Path: " + Directory.GetParent(path).FullName);
-			UnityEngine.Debug.Log("Relative Target Path: " + ultraCardsLocation);
-			UnityEngine.Debug.Log("Full Path: " + Paths.PluginPath + ultraCardsLocation);
 		}
 		void Start()
 		{
