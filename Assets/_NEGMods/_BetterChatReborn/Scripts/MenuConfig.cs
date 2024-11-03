@@ -3,6 +3,8 @@ using UnboundLib.Utils.UI;
 using UnityEngine.UI;
 using UnityEngine;
 using UnboundLib;
+using NEG.BetterChatReborn.Chat.Messages;
+using System;
 
 namespace NEG.BetterChatReborn
 {
@@ -20,7 +22,6 @@ namespace NEG.BetterChatReborn
 		private static void InitUnbound()
 		{
 			MarkAsClientMod();
-			InitConfig();
 			RegisterMenuPreviewInModMenuConfig();
 			RegisterHandShake();
 		}
@@ -37,15 +38,19 @@ namespace NEG.BetterChatReborn
 			Unbound.RegisterMenu("Better Chat Reborn", () =>
 			{
 				ChatMenuManager.Instance.EnableChat();
-				ChatMenuManager.Instance.MessageManager.CreateClientMessage();
+				var _messageA = new MessageData("Player 1", "Lorem ipsum odor amet, consectetuer adipiscing elit.",
+					Color.red, DateTime.Now);
+				var _messageB = new MessageData("Player 2", "Gravida dictum ad egestas cubilia massa gravida adipiscing ad.",
+					Color.green, DateTime.Now);
+				var _messageC = new MessageData("Player 3", "Ac ultrices lacus euismod consectetur diam natoque nec.",
+					Color.yellow, DateTime.Now);
+				var _messageD = new MessageData("Player 4", "Orci arcu tristique ridiculus varius venenatis parturient laoreet velit.",
+					Color.cyan, DateTime.Now);
+				ChatMenuManager.Instance.MessageManager.CreateClientMessage(_messageA);
+				ChatMenuManager.Instance.MessageManager.CreateClientMessage(_messageB);
+				ChatMenuManager.Instance.MessageManager.CreateClientMessage(_messageC);
+				ChatMenuManager.Instance.MessageManager.CreateClientMessage(_messageD);
 			}, CreateMenuConfigOptions, null, true);
-		}
-		private static void InitConfig()
-		{
-			ConfigBindings.SetWidth(menuWidthDefault);
-			ConfigBindings.SetHeight(menuHeightDefault);
-			ConfigBindings.SetPosX(Screen.width - 750);
-			ConfigBindings.SetPosY(10);
 		}
 		private static void CreateMenuConfigOptions(GameObject _menu)
 		{

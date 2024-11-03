@@ -7,14 +7,11 @@ namespace NEG.BetterChatReborn.Patches
 	[HarmonyPatch(typeof(MenuControllerHandler), "Start")]
 	public sealed class HandlerStartPatch : MonoBehaviour
 	{
-		private static void Postfix(MenuControllerHandler __instance)
+		private static void Postfix()
 		{
-			if(__instance == MenuControllerHandler.instance)
-			{
-				__instance.gameObject.AddComponent<ChatMenuManager>();
-				UnityEngine.Debug.Assert(__instance.GetComponent<ChatMenuManager>() != null, 
-					$"Could not add {nameof(ChatMenuManager)}");
-			}
+			MenuControllerHandler.instance.gameObject.AddComponent<ChatMenuManager>();
+			UnityEngine.Debug.Assert(MenuControllerHandler.instance.gameObject.GetComponent<ChatMenuManager>() != null, 
+				$"Could not add {nameof(ChatMenuManager)}");
 		}
 	}
 }

@@ -9,8 +9,7 @@ namespace NEG.BetterChatReborn.Patches
 	{
 		private static bool Prefix()
 		{
-			var _lockingInput = ChatMenuManager.Instance.Hooks.LastInputLockingState;
-			return !_lockingInput;
+			return !ChatMenuManager.Instance.Hooks.LastInputLockingState;
 		}
 	}
 }

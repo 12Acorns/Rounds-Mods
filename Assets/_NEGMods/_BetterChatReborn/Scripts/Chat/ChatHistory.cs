@@ -1,4 +1,5 @@
 ﻿using NEG.BetterChatReborn.Chat.Messages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,16 +22,30 @@ namespace NEG.BetterChatReborn.Chat
 			_value.AddMessage(_message);
 			playerChatMap[_player.playerID] = _value;
 		}
+		public static bool TryGetMostRecentMessage(Player _player, out MessageInfo _message)
+		{
+			_message = default;
+			if(!playerChatMap.TryGetValue(_player.playerID, out var _history))
+			{
+				return false;
+			}
+			_message = _history.MostRecentMessage;
+			return _message != default;
+		}
 		public static bool TryGetChatHistory(Player _player, out PlayerChatHistory _history)
 		{
 			return playerChatMap.TryGetValue(_player.playerID, out _history);
 		}
 		public static IEnumerable<MessageInfo> GetAllChatHistoryOrdered()
 		{
-			return GetAllChatHistoryUnOrdered().OrderBy(x => x.TimeSinceMatchStart.Ticks);
+			return GetAllChatHistoryUnOrdered().OrderBy(x => x.TimeSent.Ticks);
 		}
 		public static IEnumerable<MessageInfo> GetAllChatHistoryUnOrdered()
 		{
+			if(playerChatMap.Count == 0)
+			{
+				return Array.Empty<MessageInfo>();
+			}
 			return playerChatMap.SelectMany(x => x.Value.GetHistory());
 		}
 		public static void ClearHistory()

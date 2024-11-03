@@ -14,6 +14,10 @@ namespace NEG.BetterChatReborn.Chat.Messages
 		private readonly Player player;
 
 		public Player Player => player;
+		/// <summary>
+		/// Default if no messages added
+		/// </summary>
+		public MessageInfo MostRecentMessage => messageHistory.Count == 0 ? default : messageHistory[messageHistory.Count - 1];
 
 		public void AddMessage(MessageInfo _message)
 		{

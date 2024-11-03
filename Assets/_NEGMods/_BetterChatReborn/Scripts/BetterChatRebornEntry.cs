@@ -1,11 +1,11 @@
-﻿using NEG.BetterChatReborn.Chat;
-using UnboundLib.GameModes;
+﻿using UnboundLib.GameModes;
 using System.Collections;
 using Jotunn.Utils;
 using UnityEngine;
 using HarmonyLib;
 using System.IO;
 using BepInEx;
+using UnboundLib;
 
 namespace NEG.BetterChatReborn
 {
@@ -16,7 +16,7 @@ namespace NEG.BetterChatReborn
 	public sealed class BetterChatRebornEntry : BaseUnityPlugin
 	{
 		public const string MODID = "com.NEG.BetterChatReborn";
-		public const string MODNAME = "BetterChat Reborn";
+		public const string MODNAME = "BetterChat-Reborn";
 		public const string MODVERSION = "1.0.0";
 
 		private static readonly string path = typeof(BetterChatRebornEntry).Assembly.Location;
@@ -35,6 +35,21 @@ namespace NEG.BetterChatReborn
 
 			ConfigBindings.InitBindings(this);
 			MenuConfig.Init();
+
+			Unbound.RegisterCredits("BetterChat Reborn",
+				credits: new string[]
+				{
+					"12Acorns (Developer of BetterChat Reborn)"
+				},
+				linkText: "Github",
+				linkURL: "https://github.com/12Acorns/Rounds-Mods");
+			Unbound.RegisterCredits("Better Chat",
+				credits: new string[]
+				{
+					"BossSloth (Developer of Better Chat)"
+				},
+				linkText: "Better Chat (Thunderstore)",
+				linkURL: "https://thunderstore.io/c/rounds/p/BossSloth/BetterChat/");
 
 			GameModeManager.AddHook(GameModeHooks.HookBattleStart, OnBattleStart);
 		}

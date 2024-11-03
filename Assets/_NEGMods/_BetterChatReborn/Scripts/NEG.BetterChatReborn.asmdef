@@ -2,9 +2,9 @@
     "name": "NEG.BetterChatReborn",
     "references": [
         "UnboundLib",
-        "RoundsWithFriends",
         "ModdingUtils",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "RoundsWithFriends"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
@@ -14,9 +14,10 @@
     "precompiledReferences": [
         "BepInEx.dll",
         "0Harmony.dll",
+        "PhotonRealtime.dll",
         "Assembly-CSharp.dll",
         "PhotonUnityNetworking.dll",
-        "PhotonRealtime.dll"
+        "MMHOOK_Assembly-CSharp.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": []

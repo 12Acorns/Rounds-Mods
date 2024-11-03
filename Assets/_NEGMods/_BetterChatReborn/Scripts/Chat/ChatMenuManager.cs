@@ -1,6 +1,7 @@
 ﻿using NEG.BetterChatReborn.Chat.Messages;
 using UnityEngine;
 using System;
+using UnboundLib;
 
 namespace NEG.BetterChatReborn.Chat
 {
@@ -9,12 +10,15 @@ namespace NEG.BetterChatReborn.Chat
 		public static ChatMenuManager Instance { get; private set; }
 		public ChatMessageManager MessageManager { get; private set; }
 		public ChatHooks Hooks { get; private set; }
+		public bool PreviewOpen { get; private set; } = false;
+		public bool MenuOpen { get; private set; } = false;
 
 		internal Action OnMenuDisable { get; set; }
 		internal Action OnMenuEnable { get; set; }
 		internal RectTransform MenuBase { get; private set; }
 
 		private (GameObject Object, Canvas Canvas, CanvasGroup Group) chatCanvas;
+		private bool cancelPreview;
 
 		void Awake()
 		{
@@ -35,8 +39,10 @@ namespace NEG.BetterChatReborn.Chat
 
 			UnityEngine.Debug.Log("Menu Name: " + MenuBase.gameObject.name);
 
-			Hooks = new ChatHooks(MenuBase.gameObject);
-			MessageManager = new ChatMessageManager(MenuBase.gameObject);
+			Hooks = gameObject.AddComponent<ChatHooks>();
+			Hooks.Init(MenuBase.gameObject);
+			MessageManager = gameObject.AddComponent<ChatMessageManager>();
+			MessageManager.Init(Hooks.ChatContainerDetails);
 
 			DisableChat();
 
@@ -46,10 +52,29 @@ namespace NEG.BetterChatReborn.Chat
 			UnityEngine.Debug.Log($"[{nameof(BetterChatReborn)}] Initialised");
 		}
 
+		// This sorta defeats seperating ChatMenuManager and ChatMessagemanager,
+		// as these were to seperate role of responsibility.
+		public void EnablePreview()
+		{
+			this.ExecuteAfterSeconds(10, DisablePreview);
+
+			PreviewOpen = true;
+
+			MenuBase.gameObject.SetActive(true);
+			chatCanvas.Group.blocksRaycasts = false;
+			UnityEngine.Debug.Assert(MenuBase.gameObject.activeSelf, "Preview not enabled");
+			if(MenuBase.gameObject.activeSelf)
+			{
+				UnityEngine.Debug.Log("Preview Enabled");
+			}
+			Hooks.ChatContainerDetails.MessageInputField.gameObject.SetActive(false);
+		}
 		public void EnableChat()
 		{
+			MenuOpen = true;
 			OnMenuEnable?.Invoke();
 			MenuBase.gameObject.SetActive(true);
+			Hooks.ChatContainerDetails.MessageInputField.gameObject.SetActive(true);
 			chatCanvas.Group.blocksRaycasts = true;
 			UnityEngine.Debug.Assert(MenuBase.gameObject.activeSelf, "Menu not enabled");
 			if(MenuBase.gameObject.activeSelf)
@@ -57,8 +82,34 @@ namespace NEG.BetterChatReborn.Chat
 				UnityEngine.Debug.Log("Menu Enabled");
 			}
 		}
+		public void DisablePreview()
+		{
+			if(cancelPreview)
+			{
+				cancelPreview = false;
+				return;
+			}
+			if(MenuOpen)
+			{
+				return;
+			}
+
+			PreviewOpen = false;
+			MenuBase.gameObject.SetActive(false);
+			chatCanvas.Group.blocksRaycasts = false;
+			UnityEngine.Debug.Assert(!MenuBase.gameObject.activeSelf, "Preview not disabled");
+			if(!MenuBase.gameObject.activeSelf)
+			{
+				UnityEngine.Debug.Log("Preview Disabled");
+			}
+		}
+		public void CancelDisablePostPreview()
+		{
+			cancelPreview = true;
+		}
 		public void DisableChat()
 		{
+			MenuOpen = false;
 			OnMenuDisable?.Invoke();
 			MenuBase.gameObject.SetActive(false);
 			chatCanvas.Group.blocksRaycasts = false;
@@ -68,6 +119,12 @@ namespace NEG.BetterChatReborn.Chat
 				UnityEngine.Debug.Log("Menu Disabled");
 			}
 		}
+		public void ClearChatAndDisable()
+		{
+			DisableOldChats();
+			ChatHistory.ClearHistory();
+			DisableChat();
+		}
 		public void ClearChat()
 		{
 			DisableOldChats();
@@ -75,13 +132,13 @@ namespace NEG.BetterChatReborn.Chat
 		}
 		private void DisableOldChats()
 		{
-			var _children = Hooks.ChatTextContainer.transform.childCount;
+			var _children = Hooks.ChatContainerDetails.ScrollRect.content.transform.childCount;
 			for(int i = 0; i < _children; i++)
 			{
-				var _child = Hooks.ChatTextContainer.transform.GetChild(i);
+				var _child = Hooks.ChatContainerDetails.ScrollRect.content.transform.GetChild(i);
 				_child.gameObject.SetActive(false);
-				_child.SetParent(null);
 			}
+			Hooks.ChatContainerDetails.ScrollRect.content.transform.DetachChildren();
 		}
 		private void InstantiateCanvas()
 		{

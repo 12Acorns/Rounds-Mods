@@ -1,36 +1,67 @@
-﻿using NEG.BetterChatReborn.Utility;
+﻿using NEG.BetterChatReborn.Extensions;
+using System.Runtime.CompilerServices;
+using NEG.BetterChatReborn.Utility;
+using System.Reflection;
 using UnityEngine;
+using Photon.Pun;
+using UnboundLib;
 using System;
-using TMPro;
 
 namespace NEG.BetterChatReborn.Chat.Messages
 {
-	public sealed class ChatHooks
+	public sealed class ChatHooks : MonoBehaviour
 	{
-		internal ChatHooks(GameObject _chatContainer)
+		private static readonly Type devConsole = typeof(DevConsole);
+
+		internal void Init(GameObject _chatContainer)
 		{
 			ChatContainer = _chatContainer;
-			var _containerDetails = ChatContainer.GetComponent<ChatContainerInformation>();
-			ChatTextContainer = _containerDetails.MessageContainer;
-			TextInput = _containerDetails.MessageInputField;
+			ChatContainerDetails = ChatContainer.GetComponent<ChatContainerInformation>();
+
+			UnityEngine.Debug.Assert(ChatContainer != null, "Chat Container is null");
+
+			UnityEngine.Debug.Assert(ChatContainerDetails?.ScrollRect != null, "Chat-Text-Container is null");
+			UnityEngine.Debug.Assert(ChatContainerDetails?.MessageInputField != null, "Text-Container is null");
+
+			On.MainMenuHandler.Awake += (_orig, _self) =>
+			{
+				ChatMenuManager.Instance.ExecuteAfterSeconds(0.2f, ChatMenuManager.Instance.ClearChatAndDisable);
+				_orig(_self);
+			};
+
 			InputLockingState += (_state) =>
 			{
 				LastInputLockingState = _state;
+				Unbound.lockInputBools["chatLock"] = LastInputLockingState;
 			};
 
-			TextInput.onSubmit.AddListener(_text =>
+			ChatContainerDetails.MessageInputField.onEndEdit.AddListener(_text =>
 			{
+				if(!Input.GetKeyDown(KeyCode.Return)) return;
+				ChatMenuManager.Instance.ExecuteAfterFrames(1, ChatMenuManager.Instance.DisableChat);
+				if(string.IsNullOrEmpty(_text)) return;
+				if(PhotonNetwork.CurrentRoom == null || PhotonNetwork.CurrentRoom?.PlayerCount == 0) return;
+
+				SendVanillaChat(_text);
+
 				var _player = PlayerUtility.GetSelf();
 				var _messageData = new MessageData(_player, _text, ChatTarget.All, DateTime.Now);
-				var _message = MessageInfo.NewInfo(ChatTextContainer.transform, _player, _messageData);
-				OnMostRecentText?.Invoke(_player, _message);
+				var _view = MenuControllerHandler.instance.GetComponent<PhotonView>();
+				_view?.RPC(nameof(ChatMenuManager.Instance.MessageManager.RPCA_CreateMessage),
+						RpcTarget.All, _player, _messageData, true);
+
+				ChatHistory.TryGetMostRecentMessage(_player, out var _recentMessage);
+				OnMostRecentText?.Invoke(_player, _recentMessage);
+
+				ChatContainerDetails.MessageInputField.text = string.Empty;
+				ChatContainerDetails.MessageInputField.selectionAnchorPosition = 0;
 				InputLockingState(false);
 			});
-			TextInput.onSelect.AddListener(_text =>
+			ChatContainerDetails.MessageInputField.onSelect.AddListener(_text =>
 			{
 				InputLockingState(true);
 			});
-			TextInput.onDeselect.AddListener(_text =>
+			ChatContainerDetails.MessageInputField.onDeselect.AddListener(_text =>
 			{
 				InputLockingState(false);
 			});
@@ -38,11 +69,9 @@ namespace NEG.BetterChatReborn.Chat.Messages
 			OnMenuEnable += OnMenuEnableBehaviour;
 			OnMenuDisable += OnMenuDisableBehaviour;
 		}
-		private ChatHooks() { }
 
-		internal GameObject ChatContainer { get; }
-		internal GameObject ChatTextContainer { get; }
-		internal TMP_InputField TextInput { get; }
+		internal GameObject ChatContainer { get; private set; }
+		internal ChatContainerInformation ChatContainerDetails { get; private set; }
 
 		public event Action OnMenuEnable
 		{
@@ -62,12 +91,27 @@ namespace NEG.BetterChatReborn.Chat.Messages
 		private void OnMenuEnableBehaviour()
 		{
 			OnMenuStateChange?.Invoke(true);
-			TextInput.Select();
+			ChatContainerDetails.MessageInputField.DoSelectEvent();
 		}
 		private void OnMenuDisableBehaviour()
 		{
 			OnMenuStateChange?.Invoke(false);
-			TextInput.ReleaseSelection();
+			ChatContainerDetails.MessageInputField.DoDeselectEvent();
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void SendVanillaChat(string _text)
+		{
+			if(PlayerManager.instance?.players?.Count == 0)
+			{
+				return;
+			}
+
+			devConsole.InvokeMember("Send", 
+				BindingFlags.Instance | 
+				BindingFlags.InvokeMethod | 
+				BindingFlags.NonPublic, 
+				null, MenuControllerHandler.instance.GetComponent<DevConsole>(), 
+				new object[] { _text });
 		}
 	}
 }

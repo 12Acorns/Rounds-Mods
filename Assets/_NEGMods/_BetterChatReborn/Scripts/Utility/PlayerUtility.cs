@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using JetBrains.Annotations;
+using Photon.Pun;
+using System.Linq;
 
 namespace NEG.BetterChatReborn.Utility
 {
@@ -6,11 +8,17 @@ namespace NEG.BetterChatReborn.Utility
 	{
 		private static Player self;
 
+		[CanBeNull]
 		public static Player GetSelf()
 		{
-			if(self == null)
+			if(self != null)
 			{
-				self = PlayerManager.instance.players.First(_player => _player.data.view.IsMine);
+				return self;
+			}
+			self = PlayerManager.instance?.players?.FirstOrDefault(_player => _player.GetComponent<PhotonView>().IsMine);
+			if(self == null || self == default)
+			{
+				return null;
 			}
 			return self;
 		}

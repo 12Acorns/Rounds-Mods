@@ -1,37 +1,53 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
+using UnboundLib;
 
 namespace NEG.BetterChatReborn.Chat.Messages
 {
-	public sealed class ChatMessageManager
+	public sealed class ChatMessageManager : MonoBehaviour
 	{
-		public ChatMessageManager(GameObject _chatMessageContainer)
+		private ChatContainerInformation chatContainerDetails;
+
+		internal void Init(ChatContainerInformation _chatMessageDetails)
 		{
-			chatMessageContainer = _chatMessageContainer;
-			targetMap = new Dictionary<ChatTarget, IEnumerable<Player>>()
-			{
-				{ ChatTarget.All, PlayerManager.instance.players },
-				{ ChatTarget.Team, PlayerManager.instance.players }
-			};
+			chatContainerDetails = _chatMessageDetails;
 		}
 
-		private readonly Dictionary<ChatTarget, IEnumerable<Player>> targetMap;
-		private readonly GameObject chatMessageContainer;
-
+		/// <summary>
+		/// A message sent to all clients
+		/// </summary>
 		[PunRPC]
-		public void RPC_SendClientMessage(Player _player, MessageData _data)
+		public void RPCA_CreateMessage(Player _sender, MessageData _data, bool _enablePreviewSelfAndOthers = true)
 		{
-			MessageInfo.NewInfo(chatMessageContainer.transform, _player, _data);
+			var _message = MessageInfo.NewInfo(chatContainerDetails, _sender, _data);
+			ChatHistory.AddMessage(_sender, _message);
+			if(_enablePreviewSelfAndOthers)
+			{
 
+				this.ExecuteAfterFrames(3, () =>
+				{
+					if(ChatMenuManager.Instance.MenuOpen)
+					{
+						return;
+					}
+					ChatMenuManager.Instance.EnablePreview();
+				});
+			}
 		}
-		public void CreateClientMessage()
+		/// <summary>
+		/// Only the current client will see this messsage
+		/// </summary>
+		public void CreateClientMessage(MessageData _data)
 		{
-
+			_ = MessageInfo.NewInfo(chatContainerDetails, _data);
 		}
-		public void SendServerMessage()
-		{
+		/// <summary>
+		/// A message sent by the server
+		/// </summary>
+		//[PunRPC]
+		//public void RPC_SendServerMessage()
+		//{
 
-		}
+		//}
 	}
 }
